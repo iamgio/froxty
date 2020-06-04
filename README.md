@@ -4,7 +4,36 @@ FroXty is JavaFX library which replicates the famous iOS translucent effect with
 ![Demo](https://i.imgur.com/Ri1srhg.gif) 
 
 ## Set-up
-To do...
+
+FroXty can be imported into your project either by downloading the JAR file (see releases) or via Maven/Gradle through JitPack.
+
+### Maven
+```xml
+<repositories>
+	<repository>
+        <id>jitpack.io</id>
+		<url>https://jitpack.io</url>
+	</repository>
+</repositories>
+<dependency>
+    <groupId>com.github.iAmGio</groupId>
+    <artifactId>froxty</artifactId>
+    <version>v1.0.0</version>
+</dependency>
+```
+
+### Gradle
+```gradle
+allprojects {
+	repositories {
+		...
+		maven { url 'https://jitpack.io' }
+	}
+}
+dependencies {
+	implementation 'com.github.iAmGio:froxty:v1.0.0'
+}
+```
 
 ## Getting started
 
