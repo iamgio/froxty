@@ -4,6 +4,7 @@ import javafx.application.Platform;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 
@@ -25,6 +26,8 @@ public class FrostyBox extends Pane {
 
         Platform.runLater(() -> {
             // Get screen position and size of the node
+            applyCss();
+            layout();
             Bounds bounds = localToScreen(getBoundsInLocal());
             Rectangle snapshotArea = new Rectangle(
                     (int) bounds.getMinX(), (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight()
@@ -34,10 +37,15 @@ public class FrostyBox extends Pane {
                 // Take screenshot of the area without the node
                 BufferedImage image = robot.createScreenCapture(snapshotArea);
 
-                // Set screenshot as background of the box
-                ImageView imageView = new ImageView(SwingFXUtils.toFXImage(image, null));
                 node.setVisible(true);
-                getChildren().add(0, new Pane(imageView));
+
+                // Set screenshot as background of the box and blur it
+                Pane background = new Pane(new ImageView(SwingFXUtils.toFXImage(image, null)));
+                GaussianBlur blur = new GaussianBlur();
+                blur.radiusProperty().bind(effect.opacityProperty().multiply(10));
+                background.setEffect(blur);
+
+                getChildren().add(0, background);
             } catch(Exception e) {
                 e.printStackTrace();
             }
