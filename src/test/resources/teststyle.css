@@ -5,12 +5,22 @@
     -fx-background-position: center center;
 }
 
+.text {
+    -fx-font-smoothing-type: gray;
+}
+
 .frosty-box {
     -fx-background-radius: 20;
-    /*-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .3), 10, 0, 0, 20);*/
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .5), 15, 0, 0, 5);
 }
 
 .frosty-box > .target {
     -fx-background-color: rgba(255, 255, 255, .4);
     -fx-background-radius: inherit;
+}
+
+.frosty-box .label {
+    -fx-font-family: 'Karla';
+    -fx-font-size: 25;
+    -fx-text-fill: black;
 }
