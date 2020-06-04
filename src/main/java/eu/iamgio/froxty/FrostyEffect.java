@@ -77,6 +77,7 @@ public class FrostyEffect {
      * @param target target node
      */
     public void apply(Node target) {
+        target.getStyleClass().add("target");
         this.target = target;
         this.box = new FrostyBox(this);
     }
