@@ -34,7 +34,7 @@ public class FrostyBox extends Pane {
 
         getChildren().add(0, background);
 
-        PauseTransition pause = new PauseTransition(Duration.millis(100));
+        PauseTransition pause = new PauseTransition(Duration.millis(effect.getUpdateTime()));
         pause.setOnFinished(e -> {
             // Set screenshot as background of the box and blur it
             update();

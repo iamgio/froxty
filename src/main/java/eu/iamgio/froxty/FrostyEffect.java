@@ -13,13 +13,21 @@ public class FrostyEffect {
     /**
      * Effect opacity
      */
-    private final SimpleDoubleProperty opacityProperty = new SimpleDoubleProperty(0.5);
+    private final SimpleDoubleProperty opacity = new SimpleDoubleProperty(0.5);
+
+    /**
+     * Time required to update
+     */
+    private int updateTime = 40;
 
     /**
      * Target node
      */
     private Node target;
 
+    /**
+     * Container which contains original node and frosty copy
+     */
     private FrostyBox box;
 
     /**
@@ -28,26 +36,42 @@ public class FrostyEffect {
     public FrostyEffect() {}
 
     /**
+     * Instantiates a new frosty effect with base opacity 0.50 and custom update time
+     * @param updateTime time required to update the effect
+     */
+    public FrostyEffect(int updateTime) {
+        this.updateTime = updateTime;
+    }
+
+    /**
      * Instantiates a new frosty effect
      * @param opacity effect opacity
      */
     public FrostyEffect(double opacity) {
-        this();
         setOpacity(opacity);
+    }
+
+    /**
+     * Instantiates a new frosty effect
+     * @param opacity effect opacity
+     * @param updateTime time required to update the effect
+     */
+    public FrostyEffect(double opacity, int updateTime) {
+        this.updateTime = updateTime;
     }
 
     /**
      * Opacity of the effect. The more opaque, the more blurry the content looks
      */
     public SimpleDoubleProperty opacityProperty() {
-        return opacityProperty;
+        return opacity;
     }
 
     /**
-     * @return Effect opacity
+     * @return Opacity of the effect. The more opaque, the more blurry the content looks
      */
     public double getOpacity() {
-        return opacityProperty.get();
+        return opacity.get();
     }
 
     /**
@@ -55,7 +79,14 @@ public class FrostyEffect {
      * @param opacity new effect opacity
      */
     public void setOpacity(double opacity) {
-        this.opacityProperty.set(opacity);
+        this.opacity.set(opacity);
+    }
+
+    /**
+     * @return Time (millis) between updates. Default value is 40
+     */
+    public int getUpdateTime() {
+        return updateTime;
     }
 
     /**
