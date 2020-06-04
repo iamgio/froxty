@@ -1,0 +1,11 @@
+.root {
+    -fx-background-image: url("https://img.gadgethacks.com/img/86/37/63601592852769/0/get-ios-10s-new-wallpaper-any-phone.w1456.jpg");
+    -fx-background-repeat: stretch;
+    -fx-background-size: cover;
+    -fx-background-position: center center;
+}
+
+.frosty-box {
+    -fx-background-radius: 20;
+    /*-fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .3), 10, 0, 0, 20);*/
+}
