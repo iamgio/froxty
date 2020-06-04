@@ -2,6 +2,7 @@ package eu.iamgio.froxty;
 
 import javafx.application.Application;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.Slider;
@@ -31,7 +32,7 @@ public class FroxtyTest extends Application {
         setupSliders(root, effect);
 
         primaryStage.setScene(scene);
-        primaryStage.setTitle("FroXty test");
+        primaryStage.setTitle("FroXty demo");
         primaryStage.show();
     }
 
@@ -42,7 +43,7 @@ public class FroxtyTest extends Application {
 
         Pane target = new Pane(label);
 
-        FrostyEffect effect = new FrostyEffect();
+        FrostyEffect effect = new FrostyEffect(20);
 
         target.prefWidthProperty().bind(root.prefWidthProperty().divide(2));
         target.prefHeightProperty().bind(root.prefHeightProperty().divide(4));
@@ -52,6 +53,7 @@ public class FroxtyTest extends Application {
 
         effect.apply(target);
         FrostyBox box = effect.getBox();
+        makeBoxDraggable(box);
 
         box.translateXProperty()
                 .bind(root.prefWidthProperty().divide(2).subtract(target.prefWidthProperty().divide(2)));
@@ -67,5 +69,21 @@ public class FroxtyTest extends Application {
         effect.opacityProperty().bind(opacitySlider.valueProperty());
 
         root.getChildren().add(new VBox(opacitySlider));
+    }
+
+    private void makeBoxDraggable(FrostyBox box) {
+        class Delta {
+            public double x, y;
+        }
+        Delta delta = new Delta();
+        box.setCursor(Cursor.MOVE);
+        box.setOnMousePressed(e -> {
+            delta.x = box.getLayoutX() - e.getSceneX();
+            delta.y = box.getLayoutY() - e.getSceneY();
+        });
+        box.setOnMouseDragged(e -> {
+            box.setLayoutX(e.getSceneX() + delta.x);
+            box.setLayoutY(e.getSceneY() + delta.y);
+        });
     }
 }
