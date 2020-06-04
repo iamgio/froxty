@@ -3,6 +3,7 @@ package eu.iamgio.froxty;
 import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Scene;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -47,17 +48,28 @@ public class FrostyBox extends Pane {
         setVisible(false);
 
         Bounds bounds = localToParent(effect.getTarget().getBoundsInLocal());
+        Scene scene = effect.getTarget().getScene();
 
         Image snapshot = effect.getTarget().getScene().getRoot().snapshot(null, null);
-        Image cropped = new WritableImage(snapshot.getPixelReader(),
-                (int) bounds.getMinX(),
-                (int) bounds.getMinY(),
-                (int) bounds.getWidth(),
-                (int) bounds.getHeight()
-        );
+        try {
+            Image cropped = new WritableImage(snapshot.getPixelReader(),
+                    properValue(bounds.getMinX(), scene.getWidth()),
+                    properValue(bounds.getMinY(), scene.getHeight()),
+                    properValue(bounds.getWidth(), scene.getWidth() - bounds.getMinX()),
+                    properValue(bounds.getHeight(), scene.getHeight() - bounds.getMinY()));
 
-        setVisible(true);
-        return cropped;
+            setVisible(true);
+            return cropped;
+        } catch(IllegalArgumentException e) {
+            // If either width or height are 0
+            return null;
+        }
+    }
+
+    private int properValue(double value, double max) {
+        if(value < 0) return 0;
+        if(max < 0) return 0;
+        return (int) Math.min(value, max);
     }
 
     private void update() {
