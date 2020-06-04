@@ -10,10 +10,10 @@ FroXty can be imported into your project either by downloading the JAR file (see
 ### Maven
 ```xml
 <repositories>
-	<repository>
+    <repository>
         <id>jitpack.io</id>
-		<url>https://jitpack.io</url>
-	</repository>
+	    <url>https://jitpack.io</url>
+    </repository>
 </repositories>
 <dependency>
     <groupId>com.github.iAmGio</groupId>
@@ -25,13 +25,13 @@ FroXty can be imported into your project either by downloading the JAR file (see
 ### Gradle
 ```gradle
 allprojects {
-	repositories {
-		...
-		maven { url 'https://jitpack.io' }
-	}
+    repositories {
+        ...
+        maven { url 'https://jitpack.io' }
+    }
 }
 dependencies {
-	implementation 'com.github.iAmGio:froxty:v1.0.0'
+    implementation 'com.github.iAmGio:froxty:v1.0.0'
 }
 ```
 
