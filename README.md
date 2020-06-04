@@ -1,5 +1,5 @@
 # FroXty
-FroxTy is JavaFX library which replicates the famous iOS translucent effect with ease.
+FroXty is JavaFX library which replicates the famous iOS translucent effect with ease.
 
 ![Demo](https://i.imgur.com/Ri1srhg.gif) 
 
