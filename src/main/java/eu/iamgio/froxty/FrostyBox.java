@@ -1,15 +1,14 @@
 package eu.iamgio.froxty;
 
-import javafx.application.Platform;
-import javafx.embed.swing.SwingFXUtils;
+import javafx.animation.PauseTransition;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
-
-import java.awt.*;
-import java.awt.image.BufferedImage;
+import javafx.util.Duration;
 
 /**
  * This {@link Pane} contains the target of the {@link FrostyEffect} and the blurred background
@@ -17,38 +16,55 @@ import java.awt.image.BufferedImage;
  */
 public class FrostyBox extends Pane {
 
+    private final FrostyEffect effect;
+    private final ImageView bgImage = new ImageView();
+
     FrostyBox(FrostyEffect effect) {
+        this.effect = effect;
         getStyleClass().add("frosty-box");
 
         Node node = effect.getTarget();
-        node.setVisible(false);
         getChildren().add(node);
 
-        Platform.runLater(() -> {
-            // Get screen position and size of the node
-            applyCss();
-            layout();
-            Bounds bounds = localToScreen(getBoundsInLocal());
-            Rectangle snapshotArea = new Rectangle(
-                    (int) bounds.getMinX(), (int) bounds.getMinY(), (int) bounds.getWidth(), (int) bounds.getHeight()
-            );
-            try {
-                Robot robot = new Robot();
-                // Take screenshot of the area without the node
-                BufferedImage image = robot.createScreenCapture(snapshotArea);
+        // Bind blur amount to opacityProperty
+        Pane background = new Pane(bgImage);
+        GaussianBlur blur = new GaussianBlur();
+        blur.radiusProperty().bind(effect.opacityProperty().multiply(100));
+        background.setEffect(blur);
 
-                node.setVisible(true);
+        getChildren().add(0, background);
 
-                // Set screenshot as background of the box and blur it
-                Pane background = new Pane(new ImageView(SwingFXUtils.toFXImage(image, null)));
-                GaussianBlur blur = new GaussianBlur();
-                blur.radiusProperty().bind(effect.opacityProperty().multiply(10));
-                background.setEffect(blur);
-
-                getChildren().add(0, background);
-            } catch(Exception e) {
-                e.printStackTrace();
-            }
+        PauseTransition pause = new PauseTransition(Duration.millis(100));
+        pause.setOnFinished(e -> {
+            // Set screenshot as background of the box and blur it
+            update();
+            pause.playFromStart();
         });
+        pause.playFromStart();
+    }
+
+    private Image screenshot() {
+        setVisible(false);
+
+        Bounds bounds = localToParent(effect.getTarget().getBoundsInLocal());
+
+        Image snapshot = effect.getTarget().getScene().getRoot().snapshot(null, null);
+        Image cropped = new WritableImage(snapshot.getPixelReader(),
+                (int) bounds.getMinX(),
+                (int) bounds.getMinY(),
+                (int) bounds.getWidth(),
+                (int) bounds.getHeight()
+        );
+
+        setVisible(true);
+        return cropped;
+    }
+
+    private void update() {
+        try {
+            bgImage.setImage(screenshot());
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
     }
 }
