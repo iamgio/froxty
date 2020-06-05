@@ -1,4 +1,7 @@
-# FroXty
+<p align="center">
+    <img src="https://i.imgur.com/l1JdYMt.png" alt="Banner">
+</p>
+
 FroXty is JavaFX library which replicates the famous iOS translucent effect with ease.
 
 ![Demo](https://i.imgur.com/Ri1srhg.gif) 
