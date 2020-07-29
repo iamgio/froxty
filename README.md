@@ -44,8 +44,7 @@ The following piece of code will generate a frosty effect out of any node:
 ```java
 //...
 FrostyEffect effect = new FrostyEffect(opacity, updateTime); // Instantiates the effect. The parameters are optional
-effect.apply(node); // Binds the effect to the node
-FrostyBox box = effect.getBox(); // Retrieves the generated container
+FrostyBox box = new FrostyBox(effect, node); // Instantiates a container with frosty effect
 root.getChildren().add(box); // Adds the container to the scene
 ```
 
@@ -62,4 +61,4 @@ Then it's possible to style it:
 }
 ```
 
-Note that the target nodes must not be directly added to the root.
+**Note** that the target nodes must not be directly added to the root.
