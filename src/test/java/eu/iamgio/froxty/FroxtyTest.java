@@ -43,7 +43,7 @@ public class FroxtyTest extends Application {
 
         Pane target = new Pane(label);
 
-        FrostyEffect effect = new FrostyEffect(20);
+        FrostyEffect effect = new FrostyEffect();
 
         target.prefWidthProperty().bind(root.prefWidthProperty().divide(2));
         target.prefHeightProperty().bind(root.prefHeightProperty().divide(4));
@@ -51,8 +51,7 @@ public class FroxtyTest extends Application {
         label.prefWidthProperty().bind(target.prefWidthProperty());
         label.prefHeightProperty().bind(target.prefHeightProperty());
 
-        effect.apply(target);
-        FrostyBox box = effect.getBox();
+        FrostyBox box = new FrostyBox(effect, target);
         makeBoxDraggable(box);
 
         box.translateXProperty()

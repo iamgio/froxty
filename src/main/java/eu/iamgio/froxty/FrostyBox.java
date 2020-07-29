@@ -17,14 +17,20 @@ import javafx.util.Duration;
  */
 public class FrostyBox extends Pane {
 
-    private final FrostyEffect effect;
+    private final Node node;
+
     private final ImageView bgImage = new ImageView();
 
-    FrostyBox(FrostyEffect effect) {
-        this.effect = effect;
+    /**
+     * Instantiates a container with frosty backdrop effect
+     * @param effect frosty effect instance
+     * @param node target node
+     */
+    public FrostyBox(FrostyEffect effect, Node node) {
+        this.node = node;
         getStyleClass().add("frosty-box");
+        node.getStyleClass().add("target");
 
-        Node node = effect.getTarget();
         getChildren().add(node);
 
         // Bind blur amount to opacityProperty
@@ -47,10 +53,10 @@ public class FrostyBox extends Pane {
     private Image screenshot() {
         setVisible(false);
 
-        Bounds bounds = localToParent(effect.getTarget().getBoundsInLocal());
-        Scene scene = effect.getTarget().getScene();
+        Bounds bounds = localToParent(node.getBoundsInLocal());
+        Scene scene = node.getScene();
 
-        Image snapshot = effect.getTarget().getScene().getRoot().snapshot(null, null);
+        Image snapshot = node.getScene().getRoot().snapshot(null, null);
         try {
             Image cropped = new WritableImage(snapshot.getPixelReader(),
                     properValue(bounds.getMinX(), scene.getWidth()),

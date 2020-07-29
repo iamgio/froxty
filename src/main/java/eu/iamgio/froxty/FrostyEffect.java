@@ -1,7 +1,6 @@
 package eu.iamgio.froxty;
 
 import javafx.beans.property.SimpleDoubleProperty;
-import javafx.scene.Node;
 
 /**
  * This class handles FroXty's frosty/translucent effect
@@ -16,19 +15,9 @@ public class FrostyEffect {
     private final SimpleDoubleProperty opacity = new SimpleDoubleProperty(0.5);
 
     /**
-     * Time required to update
+     * Time (in ms) required to update
      */
-    private int updateTime = 40;
-
-    /**
-     * Target node
-     */
-    private Node target;
-
-    /**
-     * Container which contains original node and frosty copy
-     */
-    private FrostyBox box;
+    private int updateTime = 10;
 
     /**
      * Instantiates a new frosty effect with base opacity 0.50
@@ -87,29 +76,5 @@ public class FrostyEffect {
      */
     public int getUpdateTime() {
         return updateTime;
-    }
-
-    /**
-     * @return The node the effect is applied on
-     */
-    public Node getTarget() {
-        return target;
-    }
-
-    /**
-     * @return Container which contains original node and frosty copy
-     */
-    public FrostyBox getBox() {
-        return box;
-    }
-
-    /**
-     * Applies the effect to a specific node
-     * @param target target node
-     */
-    public void apply(Node target) {
-        target.getStyleClass().add("target");
-        this.target = target;
-        this.box = new FrostyBox(this);
     }
 }
