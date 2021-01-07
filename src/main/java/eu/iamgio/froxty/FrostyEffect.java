@@ -6,7 +6,6 @@ import javafx.beans.property.SimpleDoubleProperty;
  * This class handles FroXty's frosty/translucent effect
  * @author Giorgio Garofalo
  */
-@SuppressWarnings("unused")
 public class FrostyEffect {
 
     /**
