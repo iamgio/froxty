@@ -17,21 +17,18 @@ import javafx.util.Duration;
  */
 public class FrostyBox extends Pane {
 
-    private final Node node;
+    private final Node child;
 
     private final ImageView bgImage = new ImageView();
 
     /**
      * Instantiates a container with frosty backdrop effect
      * @param effect frosty effect instance
-     * @param node target node
+     * @param child target node
      */
-    public FrostyBox(FrostyEffect effect, Node node) {
-        this.node = node;
+    public FrostyBox(FrostyEffect effect, Node child) {
+        this.child = child;
         getStyleClass().add("frosty-box");
-        node.getStyleClass().add("target");
-
-        getChildren().add(node);
 
         // Bind blur amount to opacityProperty
         Pane background = new Pane(bgImage);
@@ -43,20 +40,48 @@ public class FrostyBox extends Pane {
 
         PauseTransition pause = new PauseTransition(Duration.millis(effect.getUpdateTime()));
         pause.setOnFinished(e -> {
-            // Set screenshot as background of the box and blur it
-            update();
+            if(child != null && child.getScene() != null) {
+                // Set screenshot as background of the box and blur it
+                update();
+            }
             pause.playFromStart();
         });
         pause.playFromStart();
     }
 
-    private Image screenshot() {
+    /**
+     * Instantiates a container with default frosty effect
+     */
+    public FrostyBox() {
+        this(new FrostyEffect(), null);
+    }
+
+    /**
+     * @return Target of the effect
+     */
+    public Node getChild() {
+        return child;
+    }
+
+    /**
+     * Sets the target of the effect
+     * @param child target
+     */
+    public void setChild(Node child) {
+        if(getChildren().size() < 2) {
+            getChildren().add(child);
+        } else {
+            getChildren().set(1, child);
+        }
+    }
+
+    private Image snapshot() {
         setVisible(false);
 
-        Bounds bounds = localToParent(node.getBoundsInLocal());
-        Scene scene = node.getScene();
+        Bounds bounds = localToParent(child.getBoundsInLocal());
+        Scene scene = child.getScene();
 
-        Image snapshot = node.getScene().getRoot().snapshot(null, null);
+        Image snapshot = child.getScene().getRoot().snapshot(null, null);
         try {
             Image cropped = new WritableImage(snapshot.getPixelReader(),
                     properValue(bounds.getMinX(), scene.getWidth()),
@@ -80,7 +105,7 @@ public class FrostyBox extends Pane {
 
     private void update() {
         try {
-            bgImage.setImage(screenshot());
+            bgImage.setImage(snapshot());
         } catch(Exception e) {
             e.printStackTrace();
         }

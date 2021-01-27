@@ -44,7 +44,7 @@ The following piece of code will generate a frosty effect out of any node:
 ```java
 //...
 FrostyEffect effect = new FrostyEffect(opacity, updateTime); // Instantiates the effect. The parameters are optional
-FrostyBox box = new FrostyBox(effect, node); // Instantiates a container with frosty effect
+FrostyBox box = new FrostyBox(effect, node); // Instantiates a container with frosty effect. The parameters are optional
 root.getChildren().add(box); // Adds the container to the scene
 ```
 
@@ -55,7 +55,7 @@ Then it's possible to style it:
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .5), 15, 0, 0, 5);
 }
 
-.frosty-box > .target {
+.frosty-box > * {
     -fx-background-color: rgba(255, 255, 255, .4);
     -fx-background-radius: inherit;
 }

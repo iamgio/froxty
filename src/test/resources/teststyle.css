@@ -14,7 +14,7 @@
     -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .5), 15, 0, 0, 5);
 }
 
-.frosty-box > .target {
+.frosty-box > * {
     -fx-background-color: rgba(255, 255, 255, .4);
     -fx-background-radius: inherit;
 }
