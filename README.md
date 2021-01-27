@@ -21,7 +21,7 @@ FroXty can be imported into your project either by downloading the JAR file (see
 <dependency>
     <groupId>com.github.iAmGio</groupId>
     <artifactId>froxty</artifactId>
-    <version>1.1.1</version>
+    <version>1.1.2</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ allprojects {
     }
 }
 dependencies {
-    implementation 'com.github.iAmGio:froxty:1.1.1'
+    implementation 'com.github.iAmGio:froxty:1.1.2'
 }
 ```
 

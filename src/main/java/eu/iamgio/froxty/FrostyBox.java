@@ -28,6 +28,7 @@ public class FrostyBox extends Pane {
      */
     public FrostyBox(FrostyEffect effect, Node child) {
         this.child = child;
+        setChild(child);
         getStyleClass().add("frosty-box");
 
         // Bind blur amount to opacityProperty
@@ -68,6 +69,7 @@ public class FrostyBox extends Pane {
      * @param child target
      */
     public void setChild(Node child) {
+        if(child == null) return;
         if(getChildren().size() < 2) {
             getChildren().add(child);
         } else {
