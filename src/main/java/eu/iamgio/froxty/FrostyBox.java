@@ -17,7 +17,7 @@ import javafx.util.Duration;
  */
 public class FrostyBox extends Pane {
 
-    private final Node child;
+    private Node child;
 
     private final ImageView bgImage = new ImageView();
 
@@ -28,7 +28,7 @@ public class FrostyBox extends Pane {
      */
     public FrostyBox(FrostyEffect effect, Node child) {
         this.child = child;
-        setChild(child);
+
         getStyleClass().add("frosty-box");
 
         // Bind blur amount to opacityProperty
@@ -37,11 +37,12 @@ public class FrostyBox extends Pane {
         blur.radiusProperty().bind(effect.opacityProperty().multiply(100));
         background.setEffect(blur);
 
-        getChildren().add(0, background);
+        getChildren().add(background);
+        if(child != null) getChildren().add(child);
 
         PauseTransition pause = new PauseTransition(Duration.millis(effect.getUpdateTime()));
         pause.setOnFinished(e -> {
-            if(child != null && child.getScene() != null) {
+            if(this.child != null && getScene() != null) {
                 // Set screenshot as background of the box and blur it
                 update();
             }
@@ -69,6 +70,7 @@ public class FrostyBox extends Pane {
      * @param child target
      */
     public void setChild(Node child) {
+        this.child = child;
         if(child == null) return;
         if(getChildren().size() < 2) {
             getChildren().add(child);
@@ -92,6 +94,7 @@ public class FrostyBox extends Pane {
                     properValue(bounds.getHeight(), scene.getHeight() - bounds.getMinY()));
 
             setVisible(true);
+
             return cropped;
         } catch(IllegalArgumentException e) {
             // If either width or height are 0
