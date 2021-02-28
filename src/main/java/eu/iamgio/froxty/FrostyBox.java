@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 import javafx.util.Duration;
 
 /**
- * This {@link Pane} contains the target of the {@link FrostyEffect} and the blurred background
+ * This {@link Pane} contains the target of the {@link FrostyEffect} and the blurred background.
  * @author Giorgio Garofalo
  */
 public class FrostyBox extends Pane {
@@ -22,7 +22,7 @@ public class FrostyBox extends Pane {
     private final ImageView bgImage = new ImageView();
 
     /**
-     * Instantiates a container with frosty backdrop effect
+     * Instantiates a container with frosty backdrop effect.
      * @param effect frosty effect instance
      * @param child target node
      */
@@ -52,7 +52,7 @@ public class FrostyBox extends Pane {
     }
 
     /**
-     * Instantiates a container with default frosty effect
+     * Instantiates a container with default frosty effect.
      */
     public FrostyBox() {
         this(new FrostyEffect(), null);
@@ -66,7 +66,7 @@ public class FrostyBox extends Pane {
     }
 
     /**
-     * Sets the target of the effect
+     * Sets the target of the effect.
      * @param child target
      */
     public void setChild(Node child) {
@@ -82,7 +82,7 @@ public class FrostyBox extends Pane {
     private Image snapshot() {
         setVisible(false);
 
-        Bounds bounds = localToParent(child.getBoundsInLocal());
+        Bounds bounds = localToParent(child.getLayoutBounds());
         Scene scene = child.getScene();
 
         Image snapshot = child.getScene().getRoot().snapshot(null, null);
