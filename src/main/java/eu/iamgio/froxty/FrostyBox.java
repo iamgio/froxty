@@ -129,7 +129,7 @@ public class FrostyBox extends Region {
 
         // Get child position
         Node child = getChild();
-        Bounds bounds = localToParent(child.getLayoutBounds());
+        Bounds bounds = child.localToScene(child.getBoundsInLocal());
         Scene scene = child.getScene();
 
         // Temporarily blur the root
