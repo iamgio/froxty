@@ -13,16 +13,15 @@ import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
- * This {@link Pane} contains the target of the {@link FrostyEffect} and the blurred background.
+ * This node contains the target of the {@link FrostyEffect} blurs the content beneath.
  * @author Giorgio Garofalo
  */
-public class FrostyBox extends Pane {
+public class FrostyBox extends Region {
 
     private final SimpleObjectProperty<Image> image = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<Node> child = new SimpleObjectProperty<>();
