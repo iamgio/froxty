@@ -21,7 +21,7 @@ FroXty can be imported into your project either by downloading the JAR file (see
 <dependency>
     <groupId>com.github.iAmGio</groupId>
     <artifactId>froxty</artifactId>
-    <version>v1.1.2</version>
+    <version>v1.2.0</version>
 </dependency>
 ```
 
@@ -34,7 +34,7 @@ allprojects {
     }
 }
 dependencies {
-    implementation 'com.github.iAmGio:froxty:v1.1.2'
+    implementation 'com.github.iAmGio:froxty:v1.2.0'
 }
 ```
 
@@ -43,8 +43,9 @@ dependencies {
 The following piece of code will generate a frosty effect out of any node:
 ```java
 //...
-FrostyEffect effect = new FrostyEffect(opacity, updateTime); // Instantiates the effect. The parameters are optional
-FrostyBox box = new FrostyBox(effect, node); // Instantiates a container with frosty effect. The parameters are optional
+FrostyEffect effect = new FrostyEffect(opacity, updateTime); // Instantiates the effect. The parameters are optional and default to (0.5, 10)
+FrostyBox box = new FrostyBox(effect, node); // Instantiates a container with frosty effect
+box.setAntialiasingLevel(0.4); // See notes below
 root.getChildren().add(box); // Adds the container to the scene
 ```
 
@@ -61,4 +62,7 @@ Then it's possible to style it:
 }
 ```
 
-**Note** that the target nodes must not be directly added to the root.
+## Important notes
+- Target nodes must not be directly added to the root.
+- Make sure to set the anti-aliasing level via `FrostyBox#setAntialiasingLevel` when working with semi-transparent nodes. `0` will result in sharp curves, while `1` will result in non-opaque pixels getting excluded from the effect; it defaults to `0.35`. It is recommended that you set it to the minimum opacity value of the target node.
+- Applying drop shadows to the target node results in visual errors. Apply effects to the Frosty Box instead.
