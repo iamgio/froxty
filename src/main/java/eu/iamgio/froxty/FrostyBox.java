@@ -6,6 +6,7 @@ import javafx.geometry.Bounds;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
@@ -14,6 +15,7 @@ import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
+import javafx.scene.paint.Color;
 import javafx.util.Duration;
 
 /**
@@ -22,10 +24,11 @@ import javafx.util.Duration;
  */
 public class FrostyBox extends Pane {
 
-    private final GaussianBlur blur;
     private final SimpleObjectProperty<Image> image = new SimpleObjectProperty<>();
+    private final SimpleObjectProperty<Node> child = new SimpleObjectProperty<>();
 
-    private Node child;
+    private final GaussianBlur blur;
+    private final SnapshotParameters parameters = new SnapshotParameters();
 
     /**
      * Instantiates a container with frosty backdrop effect.
@@ -33,10 +36,12 @@ public class FrostyBox extends Pane {
      * @param child target node
      */
     public FrostyBox(FrostyEffect effect, Node child) {
-        this.child = child;
+        this.child.set(child);
+        this.parameters.setFill(Color.TRANSPARENT);
 
         getStyleClass().add("frosty-box");
 
+        // Set-up blurred background
         Region background = new Region();
         getChildren().add(background);
         image.addListener((observable, old, img) -> {
@@ -52,15 +57,27 @@ public class FrostyBox extends Pane {
 
         if(child != null) getChildren().add(child);
 
+        // Set-up loop
         PauseTransition pause = new PauseTransition(Duration.millis(effect.getUpdateTime()));
         pause.setOnFinished(e -> {
-            if(this.child != null && getScene() != null) {
+            if(getChild() != null && getScene() != null) {
                 // Set screenshot as background of the box and blur it
                 update();
             }
             pause.playFromStart();
         });
         pause.playFromStart();
+
+        // Set-up listener to when child changes
+        this.child.addListener((observable, oldValue, newValue) -> {
+            if(newValue == null) {
+                getChildren().remove(1, 2);
+            } else if(getChildren().size() < 2) {
+                getChildren().add(newValue);
+            } else {
+                getChildren().set(1, newValue);
+            }
+        });
     }
 
     /**
@@ -74,7 +91,7 @@ public class FrostyBox extends Pane {
      * @return Target of the effect
      */
     public Node getChild() {
-        return child;
+        return child.get();
     }
 
     /**
@@ -82,41 +99,40 @@ public class FrostyBox extends Pane {
      * @param child target
      */
     public void setChild(Node child) {
-        this.child = child;
-        if(child == null) return;
-        if(getChildren().size() < 2) {
-            getChildren().add(child);
-        } else {
-            getChildren().set(1, child);
-        }
+        this.child.set(child);
     }
 
     private Image snapshot() {
+        // Temporarily hide this node
         setVisible(false);
 
+        // Get child position
+        Node child = getChild();
         Bounds bounds = localToParent(child.getLayoutBounds());
         Scene scene = child.getScene();
 
+        // Temporarily blur the root
         Parent root = scene.getRoot();
-        Effect eff = root.getEffect();
+        Effect oldEffect = root.getEffect();
         root.setEffect(blur);
 
-        Image snapshot = child.getScene().getRoot().snapshot(null, null);
+        // Get an image of the root without the target itself
+        Image snapshot = root.snapshot(parameters, null);
         try {
-            Image cropped = new WritableImage(snapshot.getPixelReader(),
+            // Crop the snapshot
+            return new WritableImage(snapshot.getPixelReader(),
                     properValue(bounds.getMinX() + blur.getRadius(), scene.getWidth()),
                     properValue(bounds.getMinY() + blur.getRadius(), scene.getHeight()),
                     properValue(bounds.getWidth(), scene.getWidth() - bounds.getMinX()),
                     properValue(bounds.getHeight(), scene.getHeight() - bounds.getMinY()));
-
-            setVisible(true);
-
-            return cropped;
         } catch(IllegalArgumentException e) {
             // If either width or height are 0
             return null;
         } finally {
-            root.setEffect(eff);
+            // Make this node visible again
+            setVisible(true);
+            // Apply the previous effect to the root
+            root.setEffect(oldEffect);
         }
     }
 

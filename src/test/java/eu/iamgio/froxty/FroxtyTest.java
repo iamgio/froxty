@@ -42,6 +42,7 @@ public class FroxtyTest extends Application {
         label.setAlignment(Pos.CENTER);
 
         Pane target = new Pane(label);
+        target.getStyleClass().add("container");
         target.setCursor(Cursor.MOVE);
 
         FrostyEffect effect = new FrostyEffect(1);
