@@ -21,7 +21,7 @@ public class FroxtyTest extends Application {
     public void start(Stage primaryStage) {
         AnchorPane root = new AnchorPane();
         Scene scene = new Scene(root, 600, 600);
-        scene.getStylesheets().add("/teststyle.css");
+        scene.getStylesheets().add("/style.css");
         Font.loadFont(getClass().getResourceAsStream("/font/Karla-Regular.ttf"), 16);
 
         root.getStyleClass().add("root");
@@ -42,8 +42,9 @@ public class FroxtyTest extends Application {
         label.setAlignment(Pos.CENTER);
 
         Pane target = new Pane(label);
+        target.setCursor(Cursor.MOVE);
 
-        FrostyEffect effect = new FrostyEffect();
+        FrostyEffect effect = new FrostyEffect(1);
 
         target.prefWidthProperty().bind(root.prefWidthProperty().divide(2));
         target.prefHeightProperty().bind(root.prefHeightProperty().divide(4));
@@ -75,7 +76,6 @@ public class FroxtyTest extends Application {
             public double x, y;
         }
         Delta delta = new Delta();
-        box.setCursor(Cursor.MOVE);
         box.setOnMousePressed(e -> {
             delta.x = box.getLayoutX() - e.getSceneX();
             delta.y = box.getLayoutY() - e.getSceneY();

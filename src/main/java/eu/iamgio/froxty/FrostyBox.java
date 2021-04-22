@@ -1,14 +1,19 @@
 package eu.iamgio.froxty;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Bounds;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.effect.Effect;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
 import javafx.util.Duration;
 
 /**
@@ -17,9 +22,10 @@ import javafx.util.Duration;
  */
 public class FrostyBox extends Pane {
 
-    private Node child;
+    private final GaussianBlur blur;
+    private final SimpleObjectProperty<Image> image = new SimpleObjectProperty<>();
 
-    private final ImageView bgImage = new ImageView();
+    private Node child;
 
     /**
      * Instantiates a container with frosty backdrop effect.
@@ -31,13 +37,19 @@ public class FrostyBox extends Pane {
 
         getStyleClass().add("frosty-box");
 
-        // Bind blur amount to opacityProperty
-        Pane background = new Pane(bgImage);
-        GaussianBlur blur = new GaussianBlur();
-        blur.radiusProperty().bind(effect.opacityProperty().multiply(100));
-        background.setEffect(blur);
-
+        Region background = new Region();
         getChildren().add(background);
+        image.addListener((observable, old, img) -> {
+            if(img != null) {
+                background.setPrefSize(img.getWidth(), img.getHeight());
+                background.setBackground(new Background(new BackgroundImage(img, null, null, null, null)));
+            }
+        });
+
+        // Bind blur amount to opacityProperty
+        blur = new GaussianBlur();
+        blur.radiusProperty().bind(effect.opacityProperty().multiply(100));
+
         if(child != null) getChildren().add(child);
 
         PauseTransition pause = new PauseTransition(Duration.millis(effect.getUpdateTime()));
@@ -85,11 +97,15 @@ public class FrostyBox extends Pane {
         Bounds bounds = localToParent(child.getLayoutBounds());
         Scene scene = child.getScene();
 
+        Parent root = scene.getRoot();
+        Effect eff = root.getEffect();
+        root.setEffect(blur);
+
         Image snapshot = child.getScene().getRoot().snapshot(null, null);
         try {
             Image cropped = new WritableImage(snapshot.getPixelReader(),
-                    properValue(bounds.getMinX(), scene.getWidth()),
-                    properValue(bounds.getMinY(), scene.getHeight()),
+                    properValue(bounds.getMinX() + blur.getRadius(), scene.getWidth()),
+                    properValue(bounds.getMinY() + blur.getRadius(), scene.getHeight()),
                     properValue(bounds.getWidth(), scene.getWidth() - bounds.getMinX()),
                     properValue(bounds.getHeight(), scene.getHeight() - bounds.getMinY()));
 
@@ -99,6 +115,8 @@ public class FrostyBox extends Pane {
         } catch(IllegalArgumentException e) {
             // If either width or height are 0
             return null;
+        } finally {
+            root.setEffect(eff);
         }
     }
 
@@ -110,7 +128,7 @@ public class FrostyBox extends Pane {
 
     private void update() {
         try {
-            bgImage.setImage(snapshot());
+            image.set(snapshot());
         } catch(Exception e) {
             e.printStackTrace();
         }
