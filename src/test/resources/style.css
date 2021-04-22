@@ -11,12 +11,12 @@
 
 .frosty-box {
     -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .5), 15, 0, 0, 5);
 }
 
-.frosty-box > .container {
+.frosty-box > * {
     -fx-background-color: rgba(255, 255, 255, .4);
     -fx-background-radius: inherit;
-    -fx-effect: dropshadow(gaussian, rgba(0, 0, 0, .5), 15, 0, 0, 5);
 }
 
 .frosty-box .label {
