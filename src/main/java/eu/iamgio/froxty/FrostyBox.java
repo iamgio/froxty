@@ -31,7 +31,7 @@ public class FrostyBox extends Region {
     private final GaussianBlur blur;
     private final SnapshotParameters parameters = new SnapshotParameters();
 
-    private int antialiasingLevel = 90;
+    private double antialiasingLevel = 0.35;
 
     /**
      * Instantiates a container with frosty backdrop effect.
@@ -106,19 +106,20 @@ public class FrostyBox extends Region {
     }
 
     /**
-     * Anti-aliasing level defines a value in range 0-255 where alpha values should be removed.
+     * Anti-aliasing level defines a value in range 0-1 where alpha values should be removed.
      * The higher the value, the more precise the process is, but it might interfere with semi-transparent nodes.
-     * Defaults to 90
-     * @return anti-aliasing level in range 0-255
+     * It is recommended that you set it to the minimum opacity present in the child node.
+     * Defaults to 0.35.
+     * @return anti-aliasing level in range 0-1
      */
-    public int getAntialiasingLevel() {
+    public double getAntialiasingLevel() {
         return antialiasingLevel;
     }
 
     /**
-     * @param antialiasingLevel anti-aliasing level to set in range 0-255
+     * @param antialiasingLevel anti-aliasing level to set in range 0-1
      */
-    public void setAntialiasingLevel(int antialiasingLevel) {
+    public void setAntialiasingLevel(double antialiasingLevel) {
         this.antialiasingLevel = antialiasingLevel;
     }
 
@@ -159,12 +160,14 @@ public class FrostyBox extends Region {
         PixelReader childReader = child.getPixelReader();
         PixelWriter backgroundWriter = background.getPixelWriter();
 
+        double antiantialiasingCap = this.antialiasingLevel * 255;
+
         for(int y = 0; y < child.getHeight(); y++) {
             for(int x = 0; x < child.getWidth(); x++) {
                 if(x < background.getWidth() && y < background.getHeight() && x < child.getWidth() && y < child.getHeight()) {
                     int argb = childReader.getArgb(x, y);
                     int alpha = (argb >> 24) & 0xFF;
-                    if(alpha < antialiasingLevel) backgroundWriter.setArgb(x, y, argb);
+                    if(alpha < antiantialiasingCap) backgroundWriter.setArgb(x, y, argb);
                 }
             }
         }
