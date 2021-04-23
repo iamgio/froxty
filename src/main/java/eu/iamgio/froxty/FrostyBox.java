@@ -56,6 +56,14 @@ public class FrostyBox extends Parent {
     }
 
     /**
+     * Instantiates a container with frosty backdrop effect and no child.
+     * @param effect frosty effect instance
+     */
+    public FrostyBox(FrostyEffect effect) {
+        this(effect, null);
+    }
+
+    /**
      * Instantiates a container with default frosty effect.
      */
     public FrostyBox() {
