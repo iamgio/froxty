@@ -7,8 +7,6 @@ import javafx.scene.Scene;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.effect.Effect;
 import javafx.scene.image.Image;
-import javafx.scene.image.PixelReader;
-import javafx.scene.image.PixelWriter;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 
@@ -52,9 +50,7 @@ public class SnapshotHelper {
 
         try {
             // Crop the snapshot
-            WritableImage cropped = crop(box.getBlur().getRadius(), backgroundSnapshot, scene, bounds);
-            // Remove transparent values
-            return subtract(box.getAntialiasingLevel() * 255, cropped, childSnapshot);
+            return crop(box.getBlur().getRadius(), backgroundSnapshot, scene, bounds);
         } catch(IllegalArgumentException e) {
             // If either width or height are 0
             return null;
@@ -62,30 +58,6 @@ public class SnapshotHelper {
             // Apply the previous effect to the root
             root.setEffect(oldEffect);
         }
-    }
-
-    /**
-     * Given two images, background and node, they get overlapped so that transparent pixels of the node get deleted from the background
-     * @param antialiasingLevel anti-aliasing level in range 0-255
-     * @param background background image
-     * @param child box image
-     * @return background image that fits the size of the box
-     * @see FrostyBox#getAntialiasingLevel()
-     */
-    private WritableImage subtract(double antialiasingLevel, WritableImage background, Image child) {
-        PixelReader childReader = child.getPixelReader();
-        PixelWriter backgroundWriter = background.getPixelWriter();
-
-        for(int y = 0; y < child.getHeight(); y++) {
-            for(int x = 0; x < child.getWidth(); x++) {
-                if(x < background.getWidth() && y < background.getHeight() && x < child.getWidth() && y < child.getHeight()) {
-                    int argb = childReader.getArgb(x, y);
-                    int alpha = (argb >> 24) & 0xFF;
-                    if(alpha < antialiasingLevel) backgroundWriter.setArgb(x, y, argb);
-                }
-            }
-        }
-        return background;
     }
 
     /**
@@ -107,6 +79,7 @@ public class SnapshotHelper {
     private int properValue(double value, double max) {
         if(value < 0) return 0;
         if(max < 0) return 0;
-        return (int) Math.min(value, max);
+        // This method is called multiple times, therefore avoiding Math.min calls improves the general performance.
+        return (int) (value <= max ? value : max);
     }
 }

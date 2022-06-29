@@ -1,14 +1,14 @@
 package eu.iamgio.froxty;
 
 import javafx.animation.PauseTransition;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundImage;
-import javafx.scene.layout.Region;
+import javafx.scene.image.ImageView;
+import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 
 /**
@@ -19,11 +19,10 @@ public class FrostyBox extends Parent {
 
     private final SimpleObjectProperty<Image> image = new SimpleObjectProperty<>();
     private final SimpleObjectProperty<Node> child = new SimpleObjectProperty<>();
+    private final SimpleDoubleProperty borderRadius = new SimpleDoubleProperty();
 
     private final SnapshotHelper helper = new SnapshotHelper();
     private final GaussianBlur blur;
-
-    private double antialiasingLevel = 0.35;
 
     /**
      * Instantiates a container with frosty backdrop effect.
@@ -36,12 +35,15 @@ public class FrostyBox extends Parent {
         getStyleClass().add("frosty-box");
 
         // Set-up blurred background
-        Region background = new Region();
+        ImageView background = new ImageView();
         getChildren().add(background);
+
         image.addListener((observable, old, img) -> {
             if(img != null) {
-                background.setPrefSize(img.getWidth(), img.getHeight());
-                background.setBackground(new Background(new BackgroundImage(img, null, null, null, null)));
+                background.setFitWidth(img.getWidth());
+                background.setFitHeight(img.getHeight());
+                background.setImage(img);
+                updateClip(background, img.getWidth(), img.getHeight());
             }
         });
 
@@ -86,21 +88,25 @@ public class FrostyBox extends Parent {
     }
 
     /**
-     * Anti-aliasing level defines a value in range 0-1 where alpha values should be removed.
-     * The higher the value, the more precise the process is, but it might interfere with semi-transparent nodes.
-     * It is recommended that you set it to the minimum opacity present in the child node.
-     * Defaults to 0.35.
-     * @return anti-aliasing level in range 0-1
+     * @return The border radius of this box.
      */
-    public double getAntialiasingLevel() {
-        return antialiasingLevel;
+    public double getBorderRadius() {
+        return borderRadius.doubleValue();
     }
 
     /**
-     * @param antialiasingLevel anti-aliasing level to set in range 0-1
+     * @return The border radius of this box.
      */
-    public void setAntialiasingLevel(double antialiasingLevel) {
-        this.antialiasingLevel = antialiasingLevel;
+    public SimpleDoubleProperty borderRadiusProperty() {
+        return borderRadius;
+    }
+
+    /**
+     * Sets the border radius of this box.
+     * @param borderRadius new border radius
+     */
+    public void setBorderRadius(double borderRadius) {
+        this.borderRadius.set(borderRadius);
     }
 
     /**
@@ -137,6 +143,9 @@ public class FrostyBox extends Parent {
         });
     }
 
+    /**
+     * Sets-up a listener for this box's child
+     */
     private void initChildListener() {
         // Set-up listener to when child changes
         this.child.addListener((observable, oldValue, newValue) -> {
@@ -148,6 +157,28 @@ public class FrostyBox extends Parent {
                 getChildren().set(1, newValue);
             }
         });
+    }
+
+    /**
+     * Updates the clip mask of this box, which allows to round borders
+     * @param background background view
+     * @param width mask width
+     * @param height mask height
+     */
+    private void updateClip(Node background, double width, double height) {
+        Rectangle clip;
+        if(background.getClip() instanceof Rectangle) {
+            clip = (Rectangle) background.getClip();
+        } else {
+            clip = new Rectangle();
+            background.setClip(clip);
+        }
+        clip.setWidth(width);
+        clip.setHeight(height);
+
+        double radius = borderRadius.doubleValue();
+        clip.setArcWidth(radius);
+        clip.setArcHeight(radius);
     }
 
     private void update() {

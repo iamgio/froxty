@@ -54,7 +54,7 @@ public class FroxtyTest extends Application {
         label.prefHeightProperty().bind(target.prefHeightProperty());
 
         FrostyBox box = new FrostyBox(effect, target);
-        box.setAntialiasingLevel(.4);
+        box.setBorderRadius(32);
         makeBoxDraggable(box);
 
         box.translateXProperty()
