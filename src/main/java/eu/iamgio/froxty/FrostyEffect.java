@@ -45,6 +45,7 @@ public class FrostyEffect {
      * @param updateTime time required to update the effect
      */
     public FrostyEffect(double opacity, int updateTime) {
+        this(opacity);
         this.updateTime = updateTime;
     }
 
